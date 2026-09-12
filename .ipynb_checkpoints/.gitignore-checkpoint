@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Ambientes virtuales
+venv/
+env/
+.venv/
+
+# Ansys / Archivos temporales pesados (mantiene solo data/modal_data_with_stress.csv)
+*.rst
+*.log
+*.err
+*.page
+*.png
+AGARD_445_6_files/
