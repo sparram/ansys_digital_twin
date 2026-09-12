@@ -1,0 +1,11 @@
+/COM,ANSYS RELEASE 2026 R1           BUILD 26.1      UP20260202       10:49:04
+
+ *** WARNING ***                         ELAPSED TIME =       5.497   TIME= 10:49:05
+ Element shape checking is currently inactive.  Issue SHPP,ON or         
+ SHPP,WARN to reactivate, if desired.                                    
+
+ *** ERROR ***                           ELAPSED TIME =       6.805   TIME= 10:49:06
+ The SML format cannot be used if the inputs are based on nodes (and     
+ degrees of freedom) and the input labels are not specified.  The        
+ SPMWRITE command is ignored.                                            
+/COM,ANSYS RELEASE 2026 R1           BUILD 26.1      UP20260202       15:01:36
