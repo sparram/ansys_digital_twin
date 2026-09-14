@@ -15,3 +15,13 @@ env/
 *.page
 *.png
 AGARD_445_6_files/
+
+# Jupyter
+.ipynb_checkpoints/
+.jupyter/
+
+# Ansys
+.AGARD_445_6_files*/
+*.backup
+*.log
+*.err
