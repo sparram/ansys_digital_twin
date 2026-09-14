@@ -37,8 +37,21 @@ class AugmentedKalmanFilter:
 
         self.C_aug = np.hstack((C, np.zeros((self.np_sens, self.num_modes))))
 
-        self.Q = np.eye(self.n_aug) * 1e-4
-        self.Q[self.nx :, self.nx :] *= 1e2
+        # =====================================================================
+        # AJUSTE Y REGULARIZACIÓN DE COVARIANZA Q (Evita arrugas espaciales)
+        # =====================================================================
+        self.Q = np.eye(self.n_aug) * 1e-5
+
+        # Asignamos incertidumbre decreciente a las fuerzas modales:
+        # Modos 1 y 2 (Flexión/Torsión suave) -> Alta libertad de estimación
+        # Modos 4 al 8 (Modos altos)          -> Penalizados para evitar 'ondas'
+        q_force_weights = np.array(
+            [1e1, 1e1, 1e-1, 1e-3, 1e-4, 1e-5, 1e-5, 1e-5]
+        )
+
+        for i in range(self.num_modes):
+            self.Q[self.nx + i, self.nx + i] = q_force_weights[i]
+            
         self.R = np.eye(self.np_sens) * (std_noise**2)
 
         self.x_hat = np.zeros((self.n_aug, 1))

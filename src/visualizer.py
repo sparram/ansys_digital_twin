@@ -30,9 +30,22 @@ def animate_digital_twin_3d(
     surf_real = mesh_real.delaunay_2d()
     surf_est = mesh_est.delaunay_2d()
 
-    # Configurar plotter de PyVista
-    plotter = pv.Plotter(shape=(1, 2), window_size=[1200, 500])
+    # Configuración de barra vertical en el extremo derecho
+    custom_scalar_bar = dict(
+        title="Uz (m)",
+        vertical=True,
+        position_x=0.82,  # Pegada al borde derecho del segundo panel
+        position_y=0.20,  # Centrada verticalmente
+        width=0.12,
+        height=0.60,
+        title_font_size=16,
+        label_font_size=18,
+    )
 
+    # Configurar plotter de PyVista
+    plotter = pv.Plotter(shape=(1, 2), window_size=[1200, 550])
+    
+    # --- Subplot 1: Real (Sin barra de color) ---
     plotter.subplot(0, 0)
     plotter.add_text("ANSYS Ground Truth (Real Wind Dynamic)", font_size=10)
     plotter.add_mesh(
@@ -43,8 +56,10 @@ def animate_digital_twin_3d(
         edge_color="black",
         line_width=0.5,
         clim=[-0.015, 0.015],
+        show_scalar_bar=False,  # Oculta la barra en el panel izquierdo
     )
-
+    
+    # --- Subplot 2: AKF (Barra vertical activa) ---
     plotter.subplot(0, 1)
     plotter.add_text("Digital Twin (AKF Real-Time Sensing)", font_size=10)
     plotter.add_mesh(
@@ -55,6 +70,7 @@ def animate_digital_twin_3d(
         edge_color="black",
         line_width=0.5,
         clim=[-0.015, 0.015],
+        scalar_bar_args=custom_scalar_bar,  # Muestra la barra vertical aquí
     )
 
     sensors_pv = pv.PolyData(coords_orig[sensor_nodes])

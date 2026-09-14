@@ -1,6 +1,7 @@
 import numpy as np
 from src.akf_filter import AugmentedKalmanFilter
 from src.rom_loader import ModalROMLoader
+from src.utils import comp_rmse
 from src.visualizer import animate_digital_twin_3d
 
 
@@ -78,7 +79,10 @@ def main():
         q_est, _ = akf.step(z_measured[:, k])
         u_est_hist[:, k] = akf.reconstruct_fields(q_est)
 
-    # 6. Render Interactive 3D Digital Twin
+    # 6.1 Compute RMSE Error and Plots 
+    comp_rmse(u_truth, u_est_hist, t_eval)
+
+    # 6.2 Render Interactive 3D Digital Twin
     dof_virtual = int(num_nodes * 0.5) * 3 + active_dof
     animate_digital_twin_3d(
         coords_orig=coords_orig,
