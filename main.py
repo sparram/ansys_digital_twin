@@ -1,7 +1,7 @@
 import numpy as np
 from src.akf_filter import AugmentedKalmanFilter
 from src.rom_loader import ModalROMLoader
-from src.visualizer import render_digital_twin_3d
+from src.visualizer import animate_digital_twin_3d
 
 
 def main():
@@ -28,12 +28,35 @@ def main():
     )
 
     # 4. Generate Ground Truth Dynamics
-    t_eval = np.arange(0, 0.5, dt)
+    # =====================================================================
+    # GENERACIÓN DE FUERZA DE VIENTO REALISTA (RÁFAGA "1-cos" + TURBULENCIA)
+    # =====================================================================
+    t_eval = np.arange(0, 1.0, dt)  # Simulación de 1 segundo
     n_steps = len(t_eval)
+    
+    # 1. Ráfaga discreta estándar CS-25 ("1 - cos gust")
+    t_gust_start = 0.1
+    t_gust_duration = 0.3
+    gust = np.zeros(n_steps)
+    
+    idx_gust = np.where(
+        (t_eval >= t_gust_start) & (t_eval <= t_gust_start + t_gust_duration)
+    )[0]
+    t_rel = t_eval[idx_gust] - t_gust_start
+    gust[idx_gust] = 0.5 * (1.0 - np.cos(2 * np.pi * t_rel / t_gust_duration))
+    
+    # 2. Turbulencia atmosférica (Ruido coloreado / viento aleatorio)
+    np.random.seed(42)
+    turbulence = np.random.normal(0, 0.15, n_steps)
+    
+    # Fuerza aerodinámica total en N (Empuje vertical ascendente)
+    f_wind_total = 80.0 * (gust + turbulence)
+    
+    # 3. Proyección sobre las coordenadas modales (Excita Flexión y Torsión)
     f_modal_real = np.zeros((8, n_steps))
-    f_modal_real[0, :] = (
-        50.0 * np.sin(2 * np.pi * 5 * t_eval) * np.exp(-5 * t_eval)
-    )
+    f_modal_real[0, :] = f_wind_total * 1.0  # Modo 1: Flexión principal
+    f_modal_real[1, :] = f_wind_total * 0.4  # Modo 2: Torsión del ala
+    f_modal_real[2, :] = f_wind_total * 0.1  # Modo 3: Flexión secundaria
 
     nx = A_cont.shape[0]
     x_real = np.zeros((nx, n_steps))
@@ -57,13 +80,16 @@ def main():
 
     # 6. Render Interactive 3D Digital Twin
     dof_virtual = int(num_nodes * 0.5) * 3 + active_dof
-    render_digital_twin_3d(
-        coords_orig,
-        u_truth,
-        u_est_hist,
-        sensor_nodes,
-        dof_virtual,
-        active_dof,
+    animate_digital_twin_3d(
+        coords_orig=coords_orig,
+        u_truth=u_truth,
+        u_est_hist=u_est_hist,
+        sensor_nodes=sensor_nodes,
+        active_dof=active_dof,  # <--- Pasa únicamente active_dof (vale 2 para Uz)
+        dt=dt,
+        scale=15.0,
+        save_gif=True,
+        gif_name="digital_twin_animation.gif",
     )
 
 
