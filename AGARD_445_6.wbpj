@@ -2,10 +2,10 @@
 <Storage>
   <Project Version="25.2.1.0">
     <base-designpoint-name valType="String">0</base-designpoint-name>
-    <timestamp-max valType="Int64">6873</timestamp-max>
+    <timestamp-max valType="Int64">7573</timestamp-max>
     <framework-build-version valType="String">26.1.174.0</framework-build-version>
     <external-version-string valType="String">2026 R1</external-version-string>
-    <last-saved-utc valType="String">09/13/2026 20:08:26</last-saved-utc>
+    <last-saved-utc valType="String">09/14/2026 15:47:56</last-saved-utc>
     <managed-categories valType="String">[report, misc, progress]</managed-categories>
     <expression-scope-container valType="String">Parameters</expression-scope-container>
     <project-type valType="String">WB2</project-type>
@@ -124,7 +124,7 @@
       <Object Name="/FileContainer/FileReference:F2" Version="1.0">
         <class-type valType="String">FileReference</class-type>
         <object-name valType="String">F2</object-name>
-        <member-data valType="String">{"DisplayText": "act.dat", "FileType": $$46bf26b7-6fc1-4d65-beab-f1e76846310d, "DependentFiles": [], "ContainerAssociations": [], "SkipForDesignPointDuplication": False, "IsDeletable": True, "ExternalSource": None, "LastDownloadFromRepository": -1, "Location": r"$(ProjectName)_files\dp0\act.dat", "ReferenceCount": 21}</member-data>
+        <member-data valType="String">{"DisplayText": "act.dat", "FileType": $$46bf26b7-6fc1-4d65-beab-f1e76846310d, "DependentFiles": [], "ContainerAssociations": [], "SkipForDesignPointDuplication": False, "IsDeletable": True, "ExternalSource": None, "LastDownloadFromRepository": -1, "Location": r"$(ProjectName)_files\dp0\act.dat", "ReferenceCount": 24}</member-data>
       </Object>
       <Object Name="/FileContainer/FileReference:F3" Version="1.0">
         <class-type valType="String">FileReference</class-type>
@@ -157,7 +157,7 @@
       <storage-scheme-id valType="String">version-1-format</storage-scheme-id>
       <deleted-sources valType="String">[]</deleted-sources>
       <last-updated valType="Int64">0</last-updated>
-      <last-modified-by-usage valType="String">{"Extrinsic": 5945, "Input": 1515, "Output": 1515}</last-modified-by-usage>
+      <last-modified-by-usage valType="String">{"Extrinsic": 7334, "Input": 1515, "Output": 1515}</last-modified-by-usage>
       <outputs-generated-by-type valType="String">{}</outputs-generated-by-type>
       <contains-significant-data valType="Boolean">false</contains-significant-data>
       <Object Name="/Messages/StoredMessage:Message" Version="1.0">
@@ -182,6 +182,34 @@ C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS\MECH\file0
         <member-data valType="String">{"DisplayText": "Message", "MessageType": "Warning", "MessageCategory": "None", "Summary": r"""The following project file may not have been backed up before it was modified:
 C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS-1\MECH\file.aapresults""", "Details": None, "Association": "", "DateTimeStamp": 09/13/2026 15:58:11, "Visibility": "Warning", "MessageSourceContainer": None, "MessageSourceEntity": None, "AdditionalMessageData": None, "DesignPoint": None}</member-data>
       </Object>
+      <Object Name="/Messages/StoredMessage:Message 4" Version="1.0">
+        <class-type valType="String">StoredMessage</class-type>
+        <object-name valType="String">Message 4</object-name>
+        <member-data valType="String">{"DisplayText": "Message", "MessageType": "Error", "MessageCategory": "None", "Summary": r"An unexpected error occurred: Failed to back up file C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS\MECH\file.rst: Error moving file from C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS\MECH\file.rst to C:\Users\aparr\Documents\ansys-digital-twin\.AGARD_445_6_files.backup\dp0\SYS\MECH\file.rst. El proceso no puede obtener acceso al archivo porque está siendo utilizado en otro proceso..", "Details": r"""Ansys.Core.FileManagement.ProjectFilesBackupException: Failed to back up file C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS\MECH\file.rst: Error moving file from C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS\MECH\file.rst to C:\Users\aparr\Documents\ansys-digital-twin\.AGARD_445_6_files.backup\dp0\SYS\MECH\file.rst. El proceso no puede obtener acceso al archivo porque está siendo utilizado en otro proceso..
+   en Ansys.Core.FileManagement.ProjectFilesBackupEngine.BackupFile(String file, Boolean moveFile)
+   en Ansys.Simulation.Core.BackupMoveHelper.MoveDirectoryToBackup(IFullContext context, String directory, IEnumerable`1 filePatternsToMove, IEnumerable`1 filePatternsToCopy, IEnumerable`1 filePatternsToIgnore)
+   en Ansys.Simulation.Core.BackupMoveHelper.BackupAddinFiles()
+   en Ansys.Addins.Infrastructure.Remoting.RemotingEventHelper.&lt;&gt;c__DisplayClass4_0`2.&lt;ExecuteOnCurrentThread&gt;b__0()
+   en Ansys.Addins.Infrastructure.Remoting.RemotingEventHelper.executeWithExceptionHandling(Action action)
+""", "Association": "", "DateTimeStamp": 09/14/2026 17:33:01, "Visibility": "Error", "MessageSourceContainer": None, "MessageSourceEntity": None, "AdditionalMessageData": None, "DesignPoint": None}</member-data>
+      </Object>
+      <Object Name="/Messages/StoredMessage:Message 5" Version="1.0">
+        <class-type valType="String">StoredMessage</class-type>
+        <object-name valType="String">Message 5</object-name>
+        <member-data valType="String">{"DisplayText": "Message", "MessageType": "Error", "MessageCategory": "None", "Summary": r"An unexpected error occurred: Failed to back up file C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS\MECH\file.rst: Error moving file from C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS\MECH\file.rst to C:\Users\aparr\Documents\ansys-digital-twin\.AGARD_445_6_files.backup\dp0\SYS\MECH\file.rst. El proceso no puede obtener acceso al archivo porque está siendo utilizado en otro proceso..", "Details": r"""Ansys.Core.FileManagement.ProjectFilesBackupException: Failed to back up file C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS\MECH\file.rst: Error moving file from C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS\MECH\file.rst to C:\Users\aparr\Documents\ansys-digital-twin\.AGARD_445_6_files.backup\dp0\SYS\MECH\file.rst. El proceso no puede obtener acceso al archivo porque está siendo utilizado en otro proceso..
+   en Ansys.Core.FileManagement.ProjectFilesBackupEngine.BackupFile(String file, Boolean moveFile)
+   en Ansys.Simulation.Core.BackupMoveHelper.MoveDirectoryToBackup(IFullContext context, String directory, IEnumerable`1 filePatternsToMove, IEnumerable`1 filePatternsToCopy, IEnumerable`1 filePatternsToIgnore)
+   en Ansys.Simulation.Core.BackupMoveHelper.BackupAddinFiles()
+   en Ansys.Addins.Infrastructure.Remoting.RemotingEventHelper.&lt;&gt;c__DisplayClass4_0`2.&lt;ExecuteOnCurrentThread&gt;b__0()
+   en Ansys.Addins.Infrastructure.Remoting.RemotingEventHelper.executeWithExceptionHandling(Action action)
+""", "Association": "", "DateTimeStamp": 09/14/2026 17:34:29, "Visibility": "Error", "MessageSourceContainer": None, "MessageSourceEntity": None, "AdditionalMessageData": None, "DesignPoint": None}</member-data>
+      </Object>
+      <Object Name="/Messages/StoredMessage:Message 6" Version="1.0">
+        <class-type valType="String">StoredMessage</class-type>
+        <object-name valType="String">Message 6</object-name>
+        <member-data valType="String">{"DisplayText": "Message", "MessageType": "Warning", "MessageCategory": "None", "Summary": r"""The following project file may not have been backed up before it was modified:
+C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS\MECH\solve.out""", "Details": None, "Association": "", "DateTimeStamp": 09/14/2026 17:40:53, "Visibility": "Warning", "MessageSourceContainer": None, "MessageSourceEntity": None, "AdditionalMessageData": None, "DesignPoint": None}</member-data>
+      </Object>
     </Container>
     <Container Name="Parameters" Version="1.0">
       <container-type valType="String">Ansys.ParameterManager.ParameterManagerAddin:parameters</container-type>
@@ -190,7 +218,7 @@ C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS-1\MECH\fil
       <maxUpdateOrder valType="Double">1</maxUpdateOrder>
       <deleted-sources valType="String">[]</deleted-sources>
       <last-updated valType="Int64">0</last-updated>
-      <last-modified-by-usage valType="String">{"Extrinsic": 6868, "Input": 6034, "Output": 1518}</last-modified-by-usage>
+      <last-modified-by-usage valType="String">{"Extrinsic": 7564, "Input": 6034, "Output": 1518}</last-modified-by-usage>
       <outputs-generated-by-type valType="String">{}</outputs-generated-by-type>
       <contains-significant-data valType="Boolean">true</contains-significant-data>
       <Object Name="/Parameters/DesignPoint:0" Version="1.0">
@@ -212,7 +240,7 @@ C:\Users\aparr\Documents\ansys-digital-twin\AGARD_445_6_files\dp0\SYS-1\MECH\fil
       <storage-scheme-id valType="String">version-1-format</storage-scheme-id>
       <deleted-sources valType="String">[]</deleted-sources>
       <last-updated valType="Int64">0</last-updated>
-      <last-modified-by-usage valType="String">{"Extrinsic": 6649, "Input": 6650, "Output": 1521}</last-modified-by-usage>
+      <last-modified-by-usage valType="String">{"Extrinsic": 6649, "Input": 6932, "Output": 1521}</last-modified-by-usage>
       <outputs-generated-by-type valType="String">{}</outputs-generated-by-type>
       <contains-significant-data valType="Boolean">true</contains-significant-data>
       <Object Name="/Schematic/System:SYS" Version="1.0">
