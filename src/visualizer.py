@@ -8,46 +8,65 @@ def animate_digital_twin_3d(
     u_est_hist,
     sensor_nodes,
     active_dof,
+    vtk_grid=None,
     dt=0.001,
     scale=15.0,
     save_gif=True,
     gif_name="digital_twin_animation.gif",
 ):
+    """Renderiza la comparación 3D en tiempo real.
 
+    Soporta nubes de puntos simples (2D) y mallas industriales 3D (Shell/Solid
+    vía VTK).
+    """
     num_nodes = coords_orig.shape[0]
     n_steps = u_truth.shape[1]
 
-    # Crear mallas iniciales en t = 0
-    u_real_0 = u_truth[:, 0].reshape((num_nodes, 3))
-    u_est_0 = u_est_hist[:, 0].reshape((num_nodes, 3))
+    # 1. Detección de topología: Malla 3D Industrial vs Nube 2D Básica
+    if vtk_grid is not None:
+        mesh_real = vtk_grid.copy(deep=True)
+        mesh_est = vtk_grid.copy(deep=True)
+        is_native_grid = True
+    else:
+        mesh_real = pv.PolyData(coords_orig)
+        mesh_est = pv.PolyData(coords_orig)
+        is_native_grid = False
 
-    mesh_real = pv.PolyData(coords_orig + scale * u_real_0)
-    mesh_real["Uz (m)"] = u_real_0[:, active_dof]
+    # Estado inicial t = 0
+    u_r0 = u_truth[:, 0].reshape((num_nodes, 3))
+    u_e0 = u_est_hist[:, 0].reshape((num_nodes, 3))
 
-    mesh_est = pv.PolyData(coords_orig + scale * u_est_0)
-    mesh_est["Uz (m)"] = u_est_0[:, active_dof]
+    mesh_real.points = coords_orig + scale * u_r0
+    mesh_real["Uz (m)"] = u_r0[:, active_dof]
 
-    surf_real = mesh_real.delaunay_2d()
-    surf_est = mesh_est.delaunay_2d()
+    mesh_est.points = coords_orig + scale * u_e0
+    mesh_est["Uz (m)"] = u_e0[:, active_dof]
 
-    # Configuración de barra vertical en el extremo derecho
+    if not is_native_grid:
+        surf_real = mesh_real.delaunay_2d()
+        surf_est = mesh_est.delaunay_2d()
+    else:
+        surf_real = mesh_real
+        surf_est = mesh_est
+
+    # 2. Barra de color vertical única a la derecha
     custom_scalar_bar = dict(
         title="Uz (m)",
         vertical=True,
-        position_x=0.82,  # Pegada al borde derecho del segundo panel
-        position_y=0.20,  # Centrada verticalmente
-        width=0.12,
+        position_x=0.82,
+        position_y=0.20,
+        width=0.08,
         height=0.60,
-        title_font_size=16,
-        label_font_size=18,
+        fmt="%.2e",
+        title_font_size=10,
+        label_font_size=8,
     )
 
-    # Configurar plotter de PyVista
     plotter = pv.Plotter(shape=(1, 2), window_size=[1200, 550])
-    
-    # --- Subplot 1: Real (Sin barra de color) ---
+
+    # Panel Izquierdo: Realidad
     plotter.subplot(0, 0)
-    plotter.add_text("ANSYS Ground Truth (Real Wind Dynamic)", font_size=10)
+    plotter.add_text("ANSYS Ground Truth (Real Dynamic)", font_size=10)
     plotter.add_mesh(
         surf_real,
         scalars="Uz (m)",
@@ -56,12 +75,12 @@ def animate_digital_twin_3d(
         edge_color="black",
         line_width=0.5,
         clim=[-0.015, 0.015],
-        show_scalar_bar=False,  # Oculta la barra en el panel izquierdo
+        show_scalar_bar=False,
     )
-    
-    # --- Subplot 2: AKF (Barra vertical activa) ---
+
+    # Panel Derecho: Gemelo Digital
     plotter.subplot(0, 1)
-    plotter.add_text("Digital Twin (AKF Real-Time Sensing)", font_size=10)
+    plotter.add_text("Digital Twin (AKF Real-Time)", font_size=10)
     plotter.add_mesh(
         surf_est,
         scalars="Uz (m)",
@@ -70,9 +89,10 @@ def animate_digital_twin_3d(
         edge_color="black",
         line_width=0.5,
         clim=[-0.015, 0.015],
-        scalar_bar_args=custom_scalar_bar,  # Muestra la barra vertical aquí
+        scalar_bar_args=custom_scalar_bar,
     )
 
+    # Marcadores de Sensores
     sensors_pv = pv.PolyData(coords_orig[sensor_nodes])
     plotter.add_mesh(
         sensors_pv, color="black", point_size=16, render_points_as_spheres=True
@@ -85,20 +105,18 @@ def animate_digital_twin_3d(
         plotter.open_gif(gif_name, fps=30)
         print(f"-> Generando animación GIF: {gif_name}...")
 
-    # Submuestreo de cuadros para acelerar el renderizado (1 de cada 10 pasos)
+    # Loop de actualización dinámica
     frame_step = 10
     for k in range(0, n_steps, frame_step):
         u_r = u_truth[:, k].reshape((num_nodes, 3))
         u_e = u_est_hist[:, k].reshape((num_nodes, 3))
 
-        # Actualizar coordenadas deformadas
         surf_real.points = coords_orig + scale * u_r
         surf_real["Uz (m)"] = u_r[:, active_dof]
 
         surf_est.points = coords_orig + scale * u_e
         surf_est["Uz (m)"] = u_e[:, active_dof]
 
-        # Actualizar posición de los sensores
         sensors_pv.points = coords_orig[sensor_nodes] + scale * u_e[sensor_nodes]
 
         if save_gif:
@@ -107,4 +125,4 @@ def animate_digital_twin_3d(
             plotter.render()
 
     plotter.close()
-    print("-> Animación 3D completada exitosamente.")
+    print("-> Animación completada exitosamente.")

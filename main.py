@@ -117,6 +117,7 @@ def main():
         u_est_hist=u_est_hist,
         sensor_nodes=sensor_nodes,
         active_dof=active_dof,
+        vtk_grid=rom_truth.result_file.grid,  # <--- Malla VTK directa de ANSYS
         dt=dt,
         scale=15.0,
         save_gif=True,
