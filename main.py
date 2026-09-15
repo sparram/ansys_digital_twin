@@ -1,9 +1,11 @@
 import numpy as np
 from src.akf_filter import AugmentedKalmanFilter
 from src.rom_loader import ModalROMLoader
-from src.utils import comp_rmse
+from src.utils import comp_rmse, plot_force_estimation
 from src.visualizer import animate_digital_twin_3d
 
+from src.utils import reconstruct_force_field
+from src.visualizer import animate_force_field_3d
 
 def main():
     rst_path = r"AGARD_445_6_files/dp0/SYS/MECH/file.rst"
@@ -100,9 +102,11 @@ def main():
     )
 
     u_est_hist = np.zeros((num_nodes * 3, n_steps))
+    f_est_hist = np.zeros((akf.num_modes, n_steps))  # Matriz para guardar las fuerzas modales
     for k in range(n_steps):
-        q_est, _ = akf.step(z_measured[:, k])
+        q_est, f_est = akf.step(z_measured[:, k])
         u_est_hist[:, k] = akf.reconstruct_fields(q_est)
+        f_est_hist[:, k] = f_est  # Guardar vector de fuerza estimada
 
     # =====================================================================
     # 5. RENDERIZADO 3D
@@ -110,7 +114,7 @@ def main():
 
     # 5.1 Compute RMSE Error and Plots 
     comp_rmse(u_truth, u_est_hist, t_eval)
-
+    
     animate_digital_twin_3d(
         coords_orig=coords_orig,
         u_truth=u_truth,
@@ -121,6 +125,24 @@ def main():
         dt=dt,
         scale=15.0,
         save_gif=True,
+    )
+
+    # 5.2 Plot pressure forces
+    #plot_force_estimation(f_modal_truth, f_est_hist, t_eval)
+
+    f_nodal_truth = reconstruct_force_field(Phi_truth, f_modal_truth)
+    f_nodal_est = reconstruct_force_field(Phi_filter, f_est_hist)
+    
+    # 2. Renderizar mapa de color 3D de presiones/fuerzas
+    animate_force_field_3d(
+        coords_orig=coords_orig,
+        f_nodal_truth=f_nodal_truth,
+        f_nodal_est=f_nodal_est,
+        sensor_nodes=sensor_nodes,
+        active_dof=active_dof,
+        u_est_hist=u_est_hist,
+        save_gif=True,
+        gif_name="force_field_3d.gif",
     )
 
 

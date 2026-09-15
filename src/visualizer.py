@@ -126,3 +126,105 @@ def animate_digital_twin_3d(
 
     plotter.close()
     print("-> Animación completada exitosamente.")
+
+
+def animate_force_field_3d(
+    coords_orig,
+    f_nodal_truth,
+    f_nodal_est,
+    sensor_nodes,
+    active_dof,
+    scale_disp=15.0,
+    u_est_hist=None,
+    save_gif=True,
+    gif_name="force_field_animation.gif",
+):
+
+    num_nodes = coords_orig.shape[0]
+    n_steps = f_nodal_est.shape[1]
+
+    # Malla base
+    mesh_real = pv.PolyData(coords_orig)
+    mesh_est = pv.PolyData(coords_orig)
+
+    # Extraer fuerza física en el DOF activo (Z)
+    f_r0 = f_nodal_truth[active_dof::3, 0]
+    f_e0 = f_nodal_est[active_dof::3, 0]
+
+    mesh_real["Fuerza Z (N)"] = f_r0
+    mesh_est["Fuerza Z (N)"] = f_e0
+
+    surf_real = mesh_real.delaunay_2d()
+    surf_est = mesh_est.delaunay_2d()
+
+    custom_scalar_bar = dict(
+        title="Fuerza Aerodinámica Fz (N)",
+        vertical=True,
+        position_x=0.82,
+        position_y=0.20,
+        width=0.08,
+        height=0.60,
+        fmt="%.1f",
+        title_font_size=10,
+        label_font_size=8,
+    )
+
+    plotter = pv.Plotter(shape=(1, 2), window_size=[1200, 550])
+
+    # Panel Izquierdo: Carga Real
+    plotter.subplot(0, 0)
+    plotter.add_text("Presión/Carga Real de Viento (Ground Truth)", font_size=10)
+    plotter.add_mesh(
+        surf_real,
+        scalars="Fuerza Z (N)",
+        cmap="plasma",
+        show_edges=True,
+        edge_color="black",
+        line_width=0.5,
+        clim=[0, np.max(f_nodal_truth)],
+        show_scalar_bar=False,
+    )
+
+    # Panel Derecho: Carga Estimada por el AKF
+    plotter.subplot(0, 1)
+    plotter.add_text("Carga Virtual Sensing Estimada (AKF Twin)", font_size=10)
+    plotter.add_mesh(
+        surf_est,
+        scalars="Fuerza Z (N)",
+        cmap="plasma",
+        show_edges=True,
+        edge_color="black",
+        line_width=0.5,
+        clim=[0, np.max(f_nodal_truth)],
+        scalar_bar_args=custom_scalar_bar,
+    )
+
+    plotter.link_views()
+    plotter.camera_position = "iso"
+
+    if save_gif:
+        plotter.open_gif(gif_name, fps=30)
+        print(f"-> Generando GIF de mapa de presiones: {gif_name}...")
+
+    # Animación temporal
+    frame_step = 10
+    for k in range(0, n_steps, frame_step):
+        f_r = f_nodal_truth[active_dof::3, k]
+        f_e = f_nodal_est[active_dof::3, k]
+
+        # Actualizar deformación si está disponible
+        if u_est_hist is not None:
+            u_e = u_est_hist[:, k].reshape((num_nodes, 3))
+            surf_real.points = coords_orig + scale_disp * u_e
+            surf_est.points = coords_orig + scale_disp * u_e
+
+        surf_real["Fuerza Z (N)"] = f_r
+        surf_est["Fuerza Z (N)"] = f_e
+
+        if save_gif:
+            plotter.write_frame()
+        else:
+            plotter.render()
+
+    plotter.close()
+    print("-> Animación de campo de cargas 3D completada.")
